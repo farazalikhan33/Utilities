@@ -1,3 +1,4 @@
+import argparse
 import requests
 from bs4 import BeautifulSoup
 import traceback
@@ -85,6 +86,17 @@ class TrainPicker:
 
 
 if __name__ == '__main__':
-    obj = TrainPicker(timeline='1m', start_stn='New-Delhi-NDLS', destn_stn='Shahjehanpur-SPN')
+    parser = argparse.ArgumentParser(description='Train Picker CLI')
+    parser.add_argument('--timeline', type=str, choices=['1w', '1m', '3m', '6m'],
+                        help='Timeline: 1w for 1 week, 1m for 1 month, 3m for 3 months, and 6m for 6 months')
+    parser.add_argument('--start-stn', type=str, required=True,
+                        help='Starting station in the format First-Word-Second-Word...-Station-Code | ex: '
+                             'Chandigarh-CDG')
+    parser.add_argument('--destn-stn', type=str, required=True,
+                        help='Destination station in the format First-Word-Second-Word...-Station-Code | ex: '
+                             'NEW-DELHI-NDLS')
+
+    args = parser.parse_args()
+    obj = TrainPicker(timeline=args.timeline, start_stn=args.start_stn, destn_stn=args.destn_stn)
     obj.main()
 
