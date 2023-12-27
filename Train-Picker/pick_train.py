@@ -4,12 +4,6 @@ from bs4 import BeautifulSoup
 import traceback
 import json
 
-train_schema = {
-    'PADMAVAT-EXPRES-14207',
-    'Lucknow-Mail-12229',
-    'SATYAGRAH-EXP-15273',
-    'LKO-NDLS-AC-SF-12429'
-}
 
 
 class TrainPicker:
