@@ -1,4 +1,5 @@
 import argparse
+
 import requests
 from bs4 import BeautifulSoup
 import traceback
@@ -19,6 +20,8 @@ class TrainPicker:
         self.train_list = list()
         self.startstn = start_stn
         self.destn_stn = destn_stn
+        self.destn_code = destn_stn.split('-')[0]
+        print(f'DESINATION CODE: {self.destn_code}')
 
     def get_trains(self):
         try:
@@ -37,7 +40,7 @@ class TrainPicker:
                         self.train_list.append(train)
 
                 for i, name in enumerate(self.train_list):
-                    print(i+1, name)
+                    print(i + 1, name)
                 return self.train_list
 
             else:
@@ -46,7 +49,6 @@ class TrainPicker:
             print(f'Unexpected Error occurred Fetching Train list between - : {e}')
             traceback.print_exc()
             return e
-
 
     def get_history(self, train):
         try:
@@ -61,9 +63,8 @@ class TrainPicker:
                     station_div = element.find('div')
                     if station_div:
                         station_name = station_div.find(text=True, recursive=False).strip()
-                        if '(NDLS)' in station_name or '(DLI)' in station_name or '(ANVT)' in station_name:
+                        if self.destn_code.lower() in station_name.lower():
                             delay = element.find('div', class_='inlineblock pdl5').get_text().split(':')[-1].strip()
-                            # train_dict[station_name] = delay
                             return delay
             else:
                 return f'received STATUS CODE: {response.status_code} for {train}'
@@ -97,6 +98,7 @@ if __name__ == '__main__':
                              'NEW-DELHI-NDLS')
 
     args = parser.parse_args()
+    print(args)
+    print("PRINT", args.timeline, args.start_stn, args.destn_stn)
     obj = TrainPicker(timeline=args.timeline, start_stn=args.start_stn, destn_stn=args.destn_stn)
     obj.main()
-
