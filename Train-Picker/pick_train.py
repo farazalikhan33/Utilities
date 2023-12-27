@@ -1,5 +1,4 @@
 import argparse
-
 import requests
 from bs4 import BeautifulSoup
 import traceback
@@ -20,8 +19,25 @@ class TrainPicker:
         self.train_list = list()
         self.startstn = start_stn
         self.destn_stn = destn_stn
-        self.destn_code = destn_stn.split('-')[0]
-        print(f'DESINATION CODE: {self.destn_code}')
+        self.starting_station_code = start_stn.split('-')[-1]
+        self.destination_code = destn_stn.split('-')[0]
+        print(f'START STATION CODE: {self.starting_station_code}\nDESINATION CODE: {self.destination_code}')
+
+    def get_destination_codes(self, soup):
+        try:
+            destination_codes = list()
+            elements = soup.find_all(class_='wd51', attrs={'etitle': True})
+            for station_block in elements:
+                destination = station_block.get_text()
+                if destination not in destination_codes and destination != self.starting_station_code:
+                    destination_codes.append(destination)
+            print(f"Targeting these Stations for destination: {destination_codes}")
+            self.destination_code = destination_codes
+            return destination_codes
+        except Exception as e:
+            print(f'Unexpected Error occurred Fetching Train list between - : {e}')
+            traceback.print_exc()
+
 
     def get_trains(self):
         try:
@@ -30,6 +46,10 @@ class TrainPicker:
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
                 target_block = soup.find('div', class_='trainlist rnd5')
+
+                if not self.get_destination_codes(soup):
+                    print(f"Using Destination Station name: {self.destination_code} for matching target stations"
+                          f"\nSUGGESTION: Kindly use exact station code for more accuracy!")
 
                 train_blocks = target_block.find_all('td', class_='wd55')
                 for train_block in train_blocks:
@@ -63,7 +83,7 @@ class TrainPicker:
                     station_div = element.find('div')
                     if station_div:
                         station_name = station_div.find(text=True, recursive=False).strip()
-                        if self.destn_code.lower() in station_name.lower():
+                        if any(destination_code in station_name for destination_code in self.destination_code):
                             delay = element.find('div', class_='inlineblock pdl5').get_text().split(':')[-1].strip()
                             return delay
             else:
@@ -99,6 +119,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     print(args)
-    print("PRINT", args.timeline, args.start_stn, args.destn_stn)
     obj = TrainPicker(timeline=args.timeline, start_stn=args.start_stn, destn_stn=args.destn_stn)
     obj.main()
+
