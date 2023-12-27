@@ -16,3 +16,4 @@ Run the script using the command line and provide necessary arguments:
 
 ```bash
 python train_picker.py --timeline 1m --start-stn New-Delhi-NDLS --destn-stn Shahjehanpur-SPN
+```
