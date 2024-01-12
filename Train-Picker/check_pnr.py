@@ -6,7 +6,7 @@ location = os.getcwd()
 print(location)
 sys.path.append(location)
 
-from Utilities.telegram import send_message
+from Utils.telegram import send_message
 
 def get_pnr(pnr):
     message = str()
@@ -25,7 +25,7 @@ def get_pnr(pnr):
             current_status += f'\nConfirmation chances: {confirmation_prob}%\nChart Prep: {char_prep_time}'
 
         message += f'*PNR: {pnr} | {response_json["srcCode"]}(PF: {response_json["srcPfNo"]}) to ' \
-                   f'{response_json["dstCode"]}(PF: {response_json["dstPfNo"]})\n*'
+                   f'{response_json["dstCode"]}(PF: {response_json["dstPfNo"]})*\n'
         message += f'{response_json["overallStatus"]} for ({response_json["trainNumber"]})\n'
         message += f'Current Status: {current_status}\n'
         print(message)
