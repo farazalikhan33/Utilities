@@ -1,0 +1,9 @@
+client_secret.json
+creds.py
+token.json
+venv/
+Posts/*
+Audios/*
+Videos/*
+Subs/*
+bg_video.mp4
