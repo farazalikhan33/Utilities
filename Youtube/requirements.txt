@@ -1,7 +1,0 @@
-google_api_python_client==2.113.0
-google_auth_oauthlib==1.2.0
-moviepy==1.0.3
-praw==7.7.1
-protobuf==4.25.2
-Requests==2.31.0
-whisper_timestamped==1.14.3
